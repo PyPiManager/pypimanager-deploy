@@ -1,6 +1,3 @@
-[submodule "pypimanager-pypiserver"]
-	path = pypimanager-pypiserver
-	url = https://github.com/PyPiManager/pypimanager-pypiserver.git
 [submodule "pypimanager-nginx"]
 	path = pypimanager-nginx
 	url = https://github.com/PyPiManager/pypimanager-nginx.git
