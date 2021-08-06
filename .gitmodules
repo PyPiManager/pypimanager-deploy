@@ -1,3 +1,12 @@
 [submodule "pypimanager-nginx"]
 	path = pypimanager-nginx
 	url = https://github.com/PyPiManager/pypimanager-nginx.git
+[submodule "pypimanager-mysql"]
+	path = pypimanager-mysql
+	url = https://github.com/PyPiManager/pypimanager-mysql.git
+[submodule "pypimanager-frontend"]
+	path = pypimanager-frontend
+	url = https://github.com/PyPiManager/pypimanager-frontend.git
+[submodule "pypimanager-backend"]
+	path = pypimanager-backend
+	url = https://github.com/PyPiManager/pypimanager-backend.git
