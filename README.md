@@ -8,4 +8,4 @@
 
 ## Chown
 
-`sudo chown 9898:9898 -R pypimanager-pypiserver/logs`
+`sudo chmod 777 -R pypiserver`
