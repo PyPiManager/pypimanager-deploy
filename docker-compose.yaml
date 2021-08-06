@@ -28,7 +28,7 @@ services:
     #   - 8081:8080
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ./pypimanager-pypiserver/packages:/data/packages
+      - ./pypiserver/packages:/data/packages
       - ./pypiserver/logs:/logs
     # command: -P /data/auth/.htpasswd -a update,download,list /data/packages
     command: -v --log-file=/logs/pypiserver.log -P . -a . /data/packages
