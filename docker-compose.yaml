@@ -32,8 +32,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/pypiserver/packages:/data/packages
       - $PWD/pypiserver/logs:/logs
-    # command: -P /data/auth/.htpasswd -a update,download,list /data/packages
-    command: -v --log-file=/logs/pypiserver.log -P . -a . /data/packages
+      - $PWD/pypiserver/pypipasswd:/pypipasswd
+    command: -v --log-file=/logs/pypiserver.log -P /pypipasswd -a update -r /data/packages -o
   db:
     image: mysql:5.7
     container_name: pypi_mysql
