@@ -13,3 +13,5 @@ pypiserver/packages/*
 !pypiserver/packages/.gitkeep
 pypiserver/logs/*
 !pypiserver/logs/.gitkeep
+
+pypiserver/venv
