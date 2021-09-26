@@ -1,43 +1,65 @@
-version: '3.7'
+version: "3.7"
 
 services:
   nginx:
-    container_name: pypiserver-nginx
+    container_name: pypi_nginx
     hostname: nginx
     image: nginx:1.18.0-alpine
     privileged: true
-    networks: 
+    restart: unless-stopped
+    networks:
       pypiserver_net:
         ipv4_address: 192.168.41.2
     ports:
       - 8080:80
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ./pypimanager-nginx/conf:/etc/nginx
-      - ./pypimanager-nginx/cache:/data/nginx/cache
-      - ./pypimanager-nginx/logs:/var/log/nginx
-      - ./pypiserver/packages:/data/packages
+      - $PWD/pypimanager-nginx/conf:/etc/nginx
+      - $PWD/pypimanager-nginx/cache:/data/nginx/cache
+      - $PWD/pypimanager-nginx/logs:/var/log/nginx
+      - $PWD/pypiserver/packages:/data/packages
   pypi-server:
-    container_name: pypiserver
+    container_name: pypi_server
     image: pypiserver/pypiserver:v1.4.2
+    restart: unless-stopped
     privileged: true
-    networks: 
+    networks:
       pypiserver_net:
         ipv4_address: 192.168.41.3
     # ports:
     #   - 8081:8080
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ./pypiserver/packages:/data/packages
-      - ./pypiserver/logs:/logs
+      - $PWD/pypiserver/packages:/data/packages
+      - $PWD/pypiserver/logs:/logs
     # command: -P /data/auth/.htpasswd -a update,download,list /data/packages
     command: -v --log-file=/logs/pypiserver.log -P . -a . /data/packages
-    restart: always
+  db:
+    image: mysql:5.7
+    container_name: pypi_mysql
+    privileged: true
+    restart: unless-stopped
+    networks:
+      pypiserver_net:
+        ipv4_address: 192.168.41.4
+    ports:
+      - 3306:3306
+    volumes:
+      - /etc/localhost:/etc/localhost
+      - $PWD/pypimanager-mysql/data:/var/lib/mysql
+      - $PWD/pypimanager-mysql/conf/my.cnf:/etc/mysql/my.cnf
+      - $PWD/pypimanager-mysql/logs:/var/log/mysql
+    environment:
+      # 请务必修改密码
+      MYSQL_ROOT_PASSWORD: "123456"
+    command:
+      - "--default-authentication-plugin=mysql_native_password"
+    entrypoint: bash -c "chown -R 999:999 /var/log/mysql && exec /entrypoint.sh mysqld"
 
-networks: 
+networks:
   pypiserver_net:
     driver: bridge
-    ipam: 
+    ipam:
       driver: default
-      config: 
+      config:
         - subnet: 192.168.41.0/16
