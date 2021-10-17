@@ -54,6 +54,20 @@ services:
       MYSQL_ROOT_PASSWORD: "123456"
     command: --default-authentication-plugin=mysql_native_password
     entrypoint: bash -c "chown -R mysql:mysql /var/log/mysql && chmod 1777 /var/log/mysql && exec /entrypoint.sh mysqld"
+  pypimanager:
+    container_name: pypi_manager
+    image: python:3.7.12-buster
+    restart: unless-stopped
+    privileged: true
+    networks:
+      pypiserver_net:
+        ipv4_address: 192.168.41.5
+    ports: 8897:5000
+    volumes:
+          - /etc/localtime:/etc/localtime:ro
+          - $PWD/pypiserver/packages:/data/packages
+          - $PWD/pypiserver/recycle_bin:/data/recycle_bin
+          - $PWD/pypimanager-backend/pypimanager_backend:/home/pypimanager_backend
 
 networks:
   pypiserver_net:
