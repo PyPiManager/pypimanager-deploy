@@ -60,7 +60,6 @@ password: 123456
 ```python setup.py sdist upload -r localhost```
 
 
-
 #### 1.3 设置密码，使用`twine`上传whl包
 
 - username: admin
@@ -71,3 +70,28 @@ pip install twine
 twine upload file_name.whl --repository-url https://pip.server_name.com/
 ```
 
+## 通过日志分析统计下载量
+
+```pip3 download -i http://10.1.14.67:8080/simple --trusted-host 10.1.14.67 requests```
+
+
+### pypiserver.log
+```
+2021-10-18 14:17:17,560|pypiserver._app|INFO|140089010392392|<LocalRequest: GET http://10.1.14.67:80/pypi/simple/requests/>
+2021-10-18 14:17:17,561|pypiserver._app|INFO|140089010392392|200 OK
+2021-10-18 14:17:17,613|pypiserver._app|INFO|140089010392392|<LocalRequest: GET http://10.1.14.67:80/pypi/simple/idna/>
+2021-10-18 14:17:17,614|pypiserver._app|INFO|140089010392392|200 OK
+2021-10-18 14:17:18,295|pypiserver._app|INFO|140089010392392|<LocalRequest: GET http://10.1.14.67:80/pypi/simple/urllib3/>
+2021-10-18 14:17:18,296|pypiserver._app|INFO|140089010392392|200 OK
+2021-10-18 14:17:18,338|pypiserver._app|INFO|140089010392392|<LocalRequest: GET http://10.1.14.67:80/pypi/simple/certifi/>
+2021-10-18 14:17:18,338|pypiserver._app|INFO|140089010392392|200 OK
+2021-10-18 14:17:18,616|pypiserver._app|INFO|140089010392392|<LocalRequest: GET http://10.1.14.67:80/pypi/simple/charset-normalizer/>
+2021-10-18 14:17:18,617|pypiserver._app|INFO|140089010392392|200 OK
+```
+
+### nginx -> access.pypi.packages.log
+```
+10.1.14.67 -  [18/Oct/2021:14:56:52 +0800] "GET /pypi/packages/requests-2.26.0-py2.py3-none-any.whl HTTP/1.1" 200 62251 "" "pip/20.1.1 {"ci":null,"cpu":"x86_64","distro":{"id":"focal","libc":{"lib":"glibc","version":"2.31"},"name":"Ubuntu","version":"20.04"},"implementation":{"name":"CPython","version":"3.7.9"},"installer":{"name":"pip","version":"20.1.1"},"openssl_version":"OpenSSL 1.1.1f  31 Mar 2020","python":"3.7.9","setuptools_version":"47.1.0","system":{"name":"Linux","release":"5.11.0-27-generic"}}" ""
+10.1.14.67 -  [18/Oct/2021:14:56:54 +0800] "GET /pypi/packages/urllib3-1.26.7-py2.py3-none-any.whl HTTP/1.1" 200 138764 "" "pip/20.1.1 {"ci":null,"cpu":"x86_64","distro":{"id":"focal","libc":{"lib":"glibc","version":"2.31"},"name":"Ubuntu","version":"20.04"},"implementation":{"name":"CPython","version":"3.7.9"},"installer":{"name":"pip","version":"20.1.1"},"openssl_version":"OpenSSL 1.1.1f  31 Mar 2020","python":"3.7.9","setuptools_version":"47.1.0","system":{"name":"Linux","release":"5.11.0-27-generic"}}" ""
+10.1.14.67 -  [18/Oct/2021:14:56:54 +0800] "GET /pypi/packages/charset_normalizer-2.0.7-py3-none-any.whl HTTP/1.1" 200 38247 "" "pip/20.1.1 {"ci":null,"cpu":"x86_64","distro":{"id":"focal","libc":{"lib":"glibc","version":"2.31"},"name":"Ubuntu","version":"20.04"},"implementation":{"name":"CPython","version":"3.7.9"},"installer":{"name":"pip","version":"20.1.1"},"openssl_version":"OpenSSL 1.1.1f  31 Mar 2020","python":"3.7.9","setuptools_version":"47.1.0","system":{"name":"Linux","release":"5.11.0-27-generic"}}" ""
+```

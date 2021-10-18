@@ -18,7 +18,7 @@ services:
       - $PWD/pypimanager-nginx/cache:/data/nginx/cache
       - $PWD/pypimanager-nginx/logs:/var/log/nginx
       - $PWD/pypiserver/packages:/data/packages
-  pypi-server:
+  server:
     container_name: pypi_server
     image: pypiserver/pypiserver:v1.4.2
     restart: unless-stopped
@@ -26,8 +26,6 @@ services:
     networks:
       pypiserver_net:
         ipv4_address: 192.168.41.3
-    # ports:
-    #   - 8081:8080
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/pypiserver/packages:/data/packages
@@ -54,7 +52,7 @@ services:
       MYSQL_ROOT_PASSWORD: "123456"
     command: --default-authentication-plugin=mysql_native_password
     entrypoint: bash -c "chown -R mysql:mysql /var/log/mysql && chmod 1777 /var/log/mysql && exec /entrypoint.sh mysqld"
-  pypimanager:
+  manager:
     container_name: pypi_manager
     image: python:3.7.12-buster
     restart: unless-stopped
@@ -62,11 +60,13 @@ services:
     networks:
       pypiserver_net:
         ipv4_address: 192.168.41.5
-    ports: 8897:5000
+    ports: 
+      - 8897:5000
     volumes:
           - /etc/localtime:/etc/localtime:ro
-          - $PWD/pypiserver/packages:/data/packages
-          - $PWD/pypiserver/recycle_bin:/data/recycle_bin
+          - $PWD/pypiserver/packages:/pypi_packages
+          - $PWD/pypiserver/recycle_bin:/pypi_packages_recycle_bin
+          - $PWD/pypimanager-nginx/logs:/nginx_logs
           - $PWD/pypimanager-backend/pypimanager_backend:/home/pypimanager_backend
 
 networks:
