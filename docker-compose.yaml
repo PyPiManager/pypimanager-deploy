@@ -9,10 +9,10 @@ services:
     restart: unless-stopped
     networks:
       pypiserver_net:
-        ipv4_address: 192.168.41.2
+        ipv4_address: 192.199.41.2
     ports:
       # 8080为pypiserver的端口
-      - 8080:8080
+      - 8899:8899
       # 8897为pypimanager的WEB端口
       - 8897:8897
     volumes:
@@ -32,7 +32,7 @@ services:
     privileged: true
     networks:
       pypiserver_net:
-        ipv4_address: 192.168.41.3
+        ipv4_address: 192.199.41.3
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/pypiserver/packages:/data/packages
@@ -46,7 +46,7 @@ services:
     restart: unless-stopped
     networks:
       pypiserver_net:
-        ipv4_address: 192.168.41.4
+        ipv4_address: 192.199.41.4
     ports:
       - 3306:3306
     volumes:
@@ -72,7 +72,7 @@ services:
       retries: 3
     networks:
       pypiserver_net:
-        ipv4_address: 192.168.41.5
+        ipv4_address: 192.199.41.5
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/pypiserver/packages:/pypi_packages
@@ -89,4 +89,4 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 192.168.41.0/16
+        - subnet: 192.199.41.0/16
