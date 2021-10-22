@@ -1,7 +1,7 @@
 [distutils]
-index-servers = 192.168.41.3
+index-servers = 192.199.41.3
 
 [localhost]
-repository: http://192.168.41.3:8080
+repository: http://192.199.41.3:8080
 username: admin
 password: pypiadmin
