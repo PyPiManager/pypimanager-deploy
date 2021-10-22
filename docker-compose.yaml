@@ -21,6 +21,10 @@ services:
       - $PWD/pypimanager-nginx/cache:/data/nginx/cache
       - $PWD/pypimanager-nginx/logs:/var/log/nginx
       - $PWD/pypiserver/packages:/data/packages
+      - $PWD/pypimanager-frontend/dist:/pypimanager-frontend
+    depends_on:
+      - server
+      - manager
   server:
     container_name: pypi_server
     image: pypiserver/pypiserver:v1.4.2
@@ -57,20 +61,27 @@ services:
     entrypoint: bash -c "chown -R mysql:mysql /var/log/mysql && chmod 1777 /var/log/mysql && exec /entrypoint.sh mysqld"
   manager:
     container_name: pypi_manager
-    image: python:3.7.12-buster
+    image: toddlerya/py_env:3.7.9-buster
     restart: unless-stopped
     privileged: true
+    command: ['/sbin/init']
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:5000']
+      interval: 300s
+      timeout: 20s
+      retries: 3
     networks:
       pypiserver_net:
         ipv4_address: 192.168.41.5
-    # ports: 
-      # - 5000:5000
     volumes:
-          - /etc/localtime:/etc/localtime:ro
-          - $PWD/pypiserver/packages:/pypi_packages
-          - $PWD/pypiserver/recycle_bin:/pypi_packages_recycle_bin
-          - $PWD/pypimanager-nginx/logs:/nginx_logs
-          - $PWD/pypimanager-backend/pypimanager_backend:/home/pypimanager_backend
+      - /etc/localtime:/etc/localtime:ro
+      - $PWD/pypiserver/packages:/pypi_packages
+      - $PWD/pypiserver/recycle_bin:/pypi_packages_recycle_bin
+      - $PWD/pypimanager-nginx/logs:/pypimanager-nginx/logs
+      - $PWD/pypimanager-backend/pypimanager_backend:/home/pypimanager_backend
+    depends_on:
+      - db
+      - server
 
 networks:
   pypiserver_net:
