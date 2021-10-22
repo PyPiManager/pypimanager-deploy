@@ -11,7 +11,10 @@ services:
       pypiserver_net:
         ipv4_address: 192.168.41.2
     ports:
-      - 8080:80
+      # 8080为pypiserver的端口
+      - 8080:8080
+      # 8897为pypimanager的WEB端口
+      - 8897:8897
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/pypimanager-nginx/conf:/etc/nginx
@@ -60,8 +63,8 @@ services:
     networks:
       pypiserver_net:
         ipv4_address: 192.168.41.5
-    ports: 
-      - 8897:5000
+    # ports: 
+      # - 5000:5000
     volumes:
           - /etc/localtime:/etc/localtime:ro
           - $PWD/pypiserver/packages:/pypi_packages
