@@ -44,7 +44,6 @@ services:
   db:
     image: mysql:5.7
     container_name: pypi_mysql
-    privileged: true
     restart: unless-stopped
     user: ${CURRENT_UID}
     networks:

@@ -8,11 +8,9 @@
 
 
 ```
-chmod 777 pypiserver/logs
-
+chown 999:999 pypiserver/logs
+export CURRENT_UID=$(id -u):$(id -g) 
 docker-compose up -d
-
-CURRENT_UID=$(id -u):$(id -g) docker-compose up
 ```
 
 ## PyPiServer
