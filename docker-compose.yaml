@@ -6,12 +6,13 @@ services:
     hostname: nginx
     image: nginx:1.18.0-alpine
     privileged: true
+    user: ${CURRENT_UID}
     restart: unless-stopped
     networks:
-      pypiserver_net:
+      pypimanager_net:
         ipv4_address: 192.199.41.2
     ports:
-      # 8080为pypiserver的端口
+      # 8899为pypiserver的端口
       - 8899:8899
       # 8897为pypimanager的WEB端口
       - 8897:8897
@@ -30,8 +31,9 @@ services:
     image: pypiserver/pypiserver:v1.4.2
     restart: unless-stopped
     privileged: true
+    user: ${CURRENT_UID}
     networks:
-      pypiserver_net:
+      pypimanager_net:
         ipv4_address: 192.199.41.3
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -44,13 +46,14 @@ services:
     container_name: pypi_mysql
     privileged: true
     restart: unless-stopped
+    user: ${CURRENT_UID}
     networks:
-      pypiserver_net:
+      pypimanager_net:
         ipv4_address: 192.199.41.4
     ports:
       - 3306:3306
     volumes:
-      - /etc/localhost:/etc/localhost
+      - /etc/localhost:/etc/localhost:ro
       - $PWD/pypimanager-mysql/data:/var/lib/mysql
       - $PWD/pypimanager-mysql/conf/my.cnf:/etc/mysql/my.cnf
       - $PWD/pypimanager-mysql/logs:/var/log/mysql
@@ -64,6 +67,7 @@ services:
     image: toddlerya/py_env:3.7.9-buster
     restart: unless-stopped
     privileged: true
+    user: ${CURRENT_UID}
     command: ['/sbin/init']
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:5000']
@@ -71,7 +75,7 @@ services:
       timeout: 20s
       retries: 3
     networks:
-      pypiserver_net:
+      pypimanager_net:
         ipv4_address: 192.199.41.5
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -84,7 +88,7 @@ services:
       - server
 
 networks:
-  pypiserver_net:
+  pypimanager_net:
     driver: bridge
     ipam:
       driver: default

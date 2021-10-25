@@ -6,6 +6,15 @@
   
 ## Deploy
 
+
+```
+chmod 777 pypiserver/logs
+
+docker-compose up -d
+
+CURRENT_UID=$(id -u):$(id -g) docker-compose up
+```
+
 ## PyPiServer
 
 https://cloud.tencent.com/developer/article/1583335
