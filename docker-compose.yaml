@@ -12,8 +12,8 @@ services:
       pypimanager_net:
         ipv4_address: 192.199.41.2
     ports:
-      # 8899为pypiserver的端口
-      - 8899:8899
+      # 8898为pypiserver的端口
+      - 8898:8898
       # 8897为pypimanager的WEB端口
       - 8897:8897
     volumes:
